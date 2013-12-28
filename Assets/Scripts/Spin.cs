@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Spin : MonoBehaviour {
+public class Spin : MonoBehaviour
+{
+    void Start() {
+    }
 
-	void Start () {
-	}
-
-	void Update () {
-		// rotate at 90 degrees per second
-		transform.Rotate(Vector3.up * Time.deltaTime*90);
-	}
+    void Update() {
+        // rotate at 90 degrees per second
+        transform.Rotate(Vector3.up * Time.deltaTime * 90);
+    }
 }
