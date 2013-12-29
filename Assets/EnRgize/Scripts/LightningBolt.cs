@@ -3,15 +3,19 @@ using System.Collections;
 
 public class LightningBolt : MonoBehaviour
 {
+    public LineRenderer lineRenderer;
     public Vector3 startVertex;
     public Vector3 endVertex;
     public int numSegments = 10;
+
     public float maxStepPercent = 0.05f;
     public float maxOffsetPercent = 0.10f;
+    public float updateRate = 1.0f / 60.0f; // seconds between updates
 
-    public LineRenderer lineRenderer;
+    private float lastUpdateTime;
 
     void Start() {
+        lastUpdateTime = Time.time;
         CreateBolt();
     }
 
@@ -47,7 +51,7 @@ public class LightningBolt : MonoBehaviour
             randomOffset = previousOffset + randomOffsetDistance;
             nextVertex = stepVertex + normal * randomOffset;
 
-            // Add this segment and continue
+            // Add this vertex and continue
             lineRenderer.SetPosition(i, nextVertex);
             previousOffset = randomOffset;
         }
@@ -56,6 +60,9 @@ public class LightningBolt : MonoBehaviour
     }
 
     void Update() {
-        CreateBolt();
+        if (Time.time - lastUpdateTime > updateRate) {
+            CreateBolt();
+            lastUpdateTime = Time.time;
+        }
     }
 }

@@ -32,7 +32,6 @@ public class DrawLines : MonoBehaviour
         GL.End();
         */
 
-
         GL.Begin(GL.QUADS);
         for (int i = 0; i < points.Count - 1; i++) {
             Vector3 point1 = new Vector3(points[i].x, points[i].y, 0);
@@ -47,34 +46,6 @@ public class DrawLines : MonoBehaviour
             GL.Vertex(point2 + perpendicular);
         }
         GL.End();
-
-        /*
-        GL.Begin(GL.QUADS);
-        GL.Color(Color.red);
-        // 0.1, 0.1 to 0.5, 0.5
-        GL.Vertex3(0.2f, 0.0f, 0);
-        GL.Vertex3(0.0f, 0.2f, 0);
-        GL.Vertex3(0.4f, 0.6f, 0);
-        GL.Vertex3(0.6f, 0.4f, 0);
-        GL.End();
-        */
-
-
-
-        /*
-        GL.Begin(GL.QUADS);
-        GL.Color(Color.red);
-        GL.Vertex3(0, 0.5F, 0);
-        GL.Vertex3(0.5F, 1, 0);
-        GL.Vertex3(1, 0.5F, 0);
-        GL.Vertex3(0.5F, 0, 0);
-        GL.Color(Color.cyan);
-        GL.Vertex3(0, 0, 0);
-        GL.Vertex3(0, 0.25F, 0);
-        GL.Vertex3(0.25F, 0.25F, 0);
-        GL.Vertex3(0.25F, 0, 0);
-        GL.End();
-        */
 
         GL.PopMatrix();
     }
