@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: aa720e8eae0b99641a05ae68d80e92e0
+guid: cde81435a94fa904aaf43707b7c3df9c
 TextureImporter:
   serializedVersion: 2
   mipmaps:
@@ -36,7 +36,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: .5, y: .5}
   spritePixelsToUnits: 100
-  alphaIsTransparency: 0
+  alphaIsTransparency: 1
   textureType: 0
   buildTargetSettings:
   - buildTarget: iPhone
