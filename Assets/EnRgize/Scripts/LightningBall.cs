@@ -6,7 +6,7 @@ public class LightningBall : MonoBehaviour
 {
     public GameObject lightningBoltPrefab;
     public float radius = 2.0f;
-    public int numBoltsInside = 0;
+    public int numBoltsInside = 10;
     public int numBoltsOutside = 10;
 
     public float updateRate = 1.0f / 60.0f; // seconds between updates
@@ -84,7 +84,7 @@ public class LightningBall : MonoBehaviour
             y2 = randomRadius2 * Mathf.Sin(randomTheta2);
             endPosition = new Vector3(x2, y2, 0);
 
-            // Set vertices in LightningBolt script
+            // Set positions in LightningBolt script
             GameObject lightningBolt = lightningBoltsInside[i];
             LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
             boltScript.startPosition = startPosition;
@@ -106,7 +106,7 @@ public class LightningBall : MonoBehaviour
             y2 = radius * Mathf.Sin(theta2);
             endPosition = new Vector3(x2, y2, 0);
 
-            // Set vertices in LightningBolt script
+            // Set positions in LightningBolt script
             GameObject lightningBolt = lightningBoltsOutside[i];
             LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
             boltScript.startPosition = startPosition;
