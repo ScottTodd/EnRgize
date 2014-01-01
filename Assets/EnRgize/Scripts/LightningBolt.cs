@@ -7,15 +7,18 @@ public class LightningBolt : MonoBehaviour
     public Vector3 startPosition;
     public Vector3 endPosition;
     public int numSegments = 10;
-
     public float maxStepPercent = 0.05f;
     public float maxOffsetPercent = 0.10f;
+    public Color tintColor;
 
     public float updateRate = 1.0f / 60.0f; // seconds between updates
     private float lastUpdateTime;
 
     void Start() {
         lastUpdateTime = Time.time;
+
+        lineRenderer.material.SetColor("_Color", tintColor);
+
         CreateBolt();
     }
 

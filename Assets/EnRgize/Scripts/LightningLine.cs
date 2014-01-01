@@ -8,6 +8,7 @@ public class LightningLine : MonoBehaviour
     public Vector2 startPosition, endPosition;
     public float thickness = 2.0f;
     public int numBoltsInside = 10;
+    public Color tintColor;
     
     public float updateRate = 1.0f / 60.0f; // seconds between updates
     private float lastUpdateTime;
@@ -37,6 +38,9 @@ public class LightningLine : MonoBehaviour
             GameObject lightningBolt = (GameObject) Instantiate(lightningBoltPrefab);
             lightningBolt.transform.parent = inside.transform;
             lightningBolt.transform.localPosition = new Vector3(0,0,0);
+
+            LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
+            boltScript.tintColor = tintColor;
             
             lightningBoltsInside.Add(lightningBolt);
         }
