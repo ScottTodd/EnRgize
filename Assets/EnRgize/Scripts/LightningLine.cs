@@ -5,7 +5,8 @@ using System.Collections.Generic;
 public class LightningLine : MonoBehaviour
 {
     public GameObject lightningBoltPrefab;
-    public Vector2 startPosition, endPosition;
+    public Vector2 startPosition;
+    public Vector2 endPosition;
     public float thickness = 2.0f;
     public int numBoltsInside = 10;
     public Color tintColor;
@@ -38,6 +39,7 @@ public class LightningLine : MonoBehaviour
             GameObject lightningBolt = (GameObject) Instantiate(lightningBoltPrefab);
             lightningBolt.transform.parent = inside.transform;
             lightningBolt.transform.localPosition = new Vector3(0,0,0);
+            lightningBolt.transform.localScale = new Vector3(1,1,1);
 
             LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
             boltScript.tintColor = tintColor;
