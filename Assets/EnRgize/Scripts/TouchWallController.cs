@@ -19,26 +19,30 @@ public class TouchWallController : MonoBehaviour
     }
 
     void Update() {
-        // Get two world positions, input source dependent on platform
-        #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
-            if (Input.GetMouseButtonDown(0)) {
-                Vector2 mousePosition = Input.mousePosition;
-                worldPosition1 = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
-                worldPosition1.z = 0;
-                
-                worldPosition2 = new Vector3(-4, 2, 0);
-            }
-        #else
-            if (Input.touchCount >= 2) {
-                Vector2 touchPosition1 = Input.GetTouch(0).position;
-                worldPosition1 = Camera.main.ScreenToWorldPoint(new Vector3(touchPosition1.x, touchPosition1.y, 0));
-                worldPosition1.z = 0;
-                
-                Vector2 touchPosition2 = Input.GetTouch(1).position;
-                worldPosition2 = Camera.main.ScreenToWorldPoint(new Vector3(touchPosition2.x, touchPosition2.y, 0));
-                worldPosition2.z = 0;
-            }
-        #endif
+        // Attempt to get two world positions, input source dependent on platform
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
+        if (Input.GetMouseButtonDown(0)) {
+            Vector2 mousePosition = Input.mousePosition;
+            worldPosition1 = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
+            worldPosition1.z = 0;
+            
+            worldPosition2 = new Vector3(-4, 2, 0);
+        }
+#else
+        if (Input.touchCount >= 2) {
+            Vector2 touchPosition1 = Input.GetTouch(0).position;
+            worldPosition1 = Camera.main.ScreenToWorldPoint(new Vector3(touchPosition1.x, touchPosition1.y, 0));
+            worldPosition1.z = 0;
+            
+            Vector2 touchPosition2 = Input.GetTouch(1).position;
+            worldPosition2 = Camera.main.ScreenToWorldPoint(new Vector3(touchPosition2.x, touchPosition2.y, 0));
+            worldPosition2.z = 0;
+        } else {
+            // Move offscreen
+            worldPosition1 = new Vector3(-100, 0, 0);
+            worldPosition2 = new Vector3(-100, 0, 0);
+        }
+#endif
 
         // Set position as the center of the two world positions
         centerPosition = (worldPosition1 + worldPosition2) / 2;
