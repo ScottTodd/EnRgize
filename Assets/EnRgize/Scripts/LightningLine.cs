@@ -7,6 +7,7 @@ public class LightningLine : MonoBehaviour
     public GameObject lightningBoltPrefab;
     public Vector2 startPosition;
     public Vector2 endPosition;
+    public bool inferPositions = false;
     public float thickness = 2.0f;
     public int numBoltsInside = 10;
     public Color tintColor;
@@ -21,6 +22,19 @@ public class LightningLine : MonoBehaviour
     }
     
     void Start() {
+        if (inferPositions) {
+            float distance;
+            if (transform.localScale.x > transform.localScale.y) {
+                distance = transform.localScale.x;
+                startPosition = new Vector2(-distance/2.0f, 0);
+                endPosition =   new Vector2( distance/2.0f, 0);
+            } else {
+                distance = transform.localScale.y;
+                startPosition = new Vector2(0, -distance/2.0f);
+                endPosition =   new Vector2(0,  distance/2.0f);
+            }
+        }
+
         CreateNewLightningBolts();
     }
     

@@ -8,6 +8,6 @@ public class WallController : MonoBehaviour
 
     void Update() {
         // rotate at 90 degrees per second
-        transform.Rotate(Vector3.back * Time.deltaTime * 90);
+        // transform.Rotate(Vector3.back * Time.deltaTime * 90);
     }
 }
