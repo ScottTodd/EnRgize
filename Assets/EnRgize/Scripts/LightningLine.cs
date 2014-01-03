@@ -8,6 +8,7 @@ public class LightningLine : MonoBehaviour
     public Vector2 startPosition;
     public Vector2 endPosition;
     public bool inferPositions = false;
+    public GameObject inferFromObject;
     public float thickness = 2.0f;
     public int numBoltsInside = 10;
     public Color tintColor;
@@ -23,16 +24,9 @@ public class LightningLine : MonoBehaviour
     
     void Start() {
         if (inferPositions) {
-            float distance;
-            if (transform.localScale.x > transform.localScale.y) {
-                distance = transform.localScale.x;
-                startPosition = new Vector2(-distance/2.0f, 0);
-                endPosition =   new Vector2( distance/2.0f, 0);
-            } else {
-                distance = transform.localScale.y;
-                startPosition = new Vector2(0, -distance/2.0f);
-                endPosition =   new Vector2(0,  distance/2.0f);
-            }
+            float distance = inferFromObject.transform.localScale.x;
+            startPosition = new Vector2(-distance/2.0f, 0);
+            endPosition   = new Vector2( distance/2.0f, 0);
         }
 
         CreateNewLightningBolts();
@@ -49,11 +43,13 @@ public class LightningLine : MonoBehaviour
         GameObject inside = new GameObject("Bolts Inside");
         inside.transform.parent = transform;
         inside.transform.localPosition = new Vector3(0,0,0);
+        inside.transform.localEulerAngles = new Vector3(0,0,0);
         for (int i = 0; i < numBoltsInside; i++) {
             GameObject lightningBolt = (GameObject) Instantiate(lightningBoltPrefab);
             lightningBolt.transform.parent = inside.transform;
             lightningBolt.transform.localPosition = new Vector3(0,0,0);
             lightningBolt.transform.localScale = new Vector3(1,1,1);
+            lightningBolt.transform.localEulerAngles = new Vector3(0,0,0);
 
             LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
             boltScript.tintColor = tintColor;
