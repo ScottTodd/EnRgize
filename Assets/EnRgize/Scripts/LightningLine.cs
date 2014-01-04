@@ -12,6 +12,9 @@ public class LightningLine : MonoBehaviour
     public float thickness = 2.0f;
     public int numBoltsInside = 10;
     public Color tintColor;
+
+    // Parent object to each LightningBolt, exposed to other scripts
+    [HideInInspector] public GameObject insideParentObject;
     
     public float updateRate = 1.0f / 60.0f; // seconds between updates
     private float lastUpdateTime;
@@ -40,13 +43,13 @@ public class LightningLine : MonoBehaviour
         lightningBoltsInside.Clear();
         
         // Create new LightningBolts inside
-        GameObject inside = new GameObject("Bolts Inside");
-        inside.transform.parent = transform;
-        inside.transform.localPosition = new Vector3(0,0,0);
-        inside.transform.localEulerAngles = new Vector3(0,0,0);
+        insideParentObject = new GameObject("Bolts Inside");
+        insideParentObject.transform.parent = transform;
+        insideParentObject.transform.localPosition = new Vector3(0,0,0);
+        insideParentObject.transform.localEulerAngles = new Vector3(0,0,0);
         for (int i = 0; i < numBoltsInside; i++) {
             GameObject lightningBolt = (GameObject) Instantiate(lightningBoltPrefab);
-            lightningBolt.transform.parent = inside.transform;
+            lightningBolt.transform.parent = insideParentObject.transform;
             lightningBolt.transform.localPosition = new Vector3(0,0,0);
             lightningBolt.transform.localScale = new Vector3(1,1,1);
             lightningBolt.transform.localEulerAngles = new Vector3(0,0,0);
