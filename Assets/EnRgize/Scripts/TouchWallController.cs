@@ -4,12 +4,15 @@ using System.Collections;
 public class TouchWallController : MonoBehaviour
 {
     public GameObject wallObject; // Wall with physics properties
+    public float timeUntilDisable = 3.0f; // seconds
+    public float minimumDeltaDistanceToUpdate = 1.0f;
 
     // public so these can be observed in the inspector, not for designer editting
     public Vector3 activeWorldPosition1;
     public Vector3 activeWorldPosition2;
     public Vector3 currentWorldPosition1;
     public Vector3 currentWorldPosition2;
+    public float deltaDistance;
 
     private LightningLine lightningLineScript;
     private bool inputDetected;
@@ -29,7 +32,6 @@ public class TouchWallController : MonoBehaviour
         lightningLineScript.insideParentObject.SetActive(false);
     }
 
-    // Returns true if input was detected and current positions were updated, false otherwise
     void QueryCurrentPositions() {
         inputDetected = false;
 
@@ -88,27 +90,37 @@ public class TouchWallController : MonoBehaviour
 
     void Update() {
         QueryCurrentPositions();
-        
-        if (Input.GetMouseButtonDown(0)) {
-            EnableWall();
-        }
-        if (Input.GetMouseButtonDown(1)) {
-            DisableWall();
-        }
 
         if (inputDetected) {
-            EnableWall();
+            float distance1 = Vector3.Distance(currentWorldPosition1, activeWorldPosition1);
+            float distance2 = Vector3.Distance(currentWorldPosition2, activeWorldPosition2);
+            deltaDistance = distance1 + distance2;
 
-            activeWorldPosition1 = currentWorldPosition1;
-            activeWorldPosition2 = currentWorldPosition2;
-            ApplyActivePositions();
+            #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
+            if (deltaDistance > minimumDeltaDistanceToUpdate) {
+                EnableWall();
+                activeWorldPosition1 = currentWorldPosition1;
+                activeWorldPosition2 = currentWorldPosition2;
+                ApplyActivePositions();
+            }
+            #else
+            if (deltaDistance > minimumDeltaDistanceToUpdate) {
+                EnableWall();
+                activeWorldPosition1 = currentWorldPosition1;
+                activeWorldPosition2 = currentWorldPosition2;
+                ApplyActivePositions();
+            }
+            #endif
         } else {
             #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
-            
+            if (Time.time - latestInputTime > timeUntilDisable) {
+                DisableWall();
+            }
             #else
-            DisableWall();
+            if (Time.time - latestInputTime > timeUntilDisable) {
+                DisableWall();
+            }
             #endif
-
         }
     }
 }
