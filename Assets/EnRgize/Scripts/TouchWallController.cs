@@ -121,13 +121,13 @@ public class TouchWallController : MonoBehaviour
             deltaDistance = distance1 + distance2;
 
             #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
-            if (deltaDistance > minimumDeltaDistanceToUpdate) {
+            if (!wallActive || deltaDistance > minimumDeltaDistanceToUpdate) {
                 activeWorldPosition1 = currentWorldPosition1;
                 activeWorldPosition2 = currentWorldPosition2;
                 StartActivateDelay();
             }
             #else
-            if (deltaDistance > minimumDeltaDistanceToUpdate) {
+            if (!wallActive || deltaDistance > minimumDeltaDistanceToUpdate) {
                 activeWorldPosition1 = currentWorldPosition1;
                 activeWorldPosition2 = currentWorldPosition2;
                 StartActivateDelay();
@@ -137,7 +137,6 @@ public class TouchWallController : MonoBehaviour
             #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
             if (wallActive && Time.time - latestActivateTime > timeUntilDisable) {
                 DisableWall();
-                print("disabling");
             }
             #else
             if (wallActive && Time.time - latestActivateTime > timeUntilDisable) {

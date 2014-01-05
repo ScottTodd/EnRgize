@@ -10,7 +10,7 @@ public class LightningLine : MonoBehaviour
     public bool inferPositions = false;
     public GameObject inferFromObject;
     public float thickness = 2.0f;
-    public int numBoltsInside = 10;
+    public int numBolts = 10;
     public Color tintColor;
 
     // Parent object to each LightningBolt, exposed to other scripts
@@ -19,13 +19,18 @@ public class LightningLine : MonoBehaviour
     public float updateRate = 1.0f / 60.0f; // seconds between updates
     private float lastUpdateTime;
     
-    private List<GameObject> lightningBoltsInside;
+    private List<GameObject> lightningBolts;
     
     void Awake() {
-        lightningBoltsInside = new List<GameObject>();
+        lightningBolts = new List<GameObject>();
     }
     
     void Start() {
+        insideParentObject = new GameObject("Bolts Inside");
+        insideParentObject.transform.parent = transform;
+        insideParentObject.transform.localPosition = new Vector3(0,0,0);
+        insideParentObject.transform.localEulerAngles = new Vector3(0,0,0);
+
         if (inferPositions) {
             float distance = inferFromObject.transform.localScale.x;
             startPosition = new Vector2(-distance/2.0f, 0);
@@ -37,17 +42,13 @@ public class LightningLine : MonoBehaviour
     
     void CreateNewLightningBolts() {
         // Delete old LightningBolts
-        for (int i = 0; i < lightningBoltsInside.Count; i++) {
-            Destroy(lightningBoltsInside[i]);
+        for (int i = 0; i < lightningBolts.Count; i++) {
+            Destroy(lightningBolts[i]);
         }
-        lightningBoltsInside.Clear();
+        lightningBolts.Clear();
         
         // Create new LightningBolts inside
-        insideParentObject = new GameObject("Bolts Inside");
-        insideParentObject.transform.parent = transform;
-        insideParentObject.transform.localPosition = new Vector3(0,0,0);
-        insideParentObject.transform.localEulerAngles = new Vector3(0,0,0);
-        for (int i = 0; i < numBoltsInside; i++) {
+        for (int i = 0; i < numBolts + 2; i++) {
             GameObject lightningBolt = (GameObject) Instantiate(lightningBoltPrefab);
             lightningBolt.transform.parent = insideParentObject.transform;
             lightningBolt.transform.localPosition = new Vector3(0,0,0);
@@ -57,14 +58,28 @@ public class LightningLine : MonoBehaviour
             LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
             boltScript.tintColor = tintColor;
             
-            lightningBoltsInside.Add(lightningBolt);
+            lightningBolts.Add(lightningBolt);
         }
         
         UpdateLightningBolts();
     }
     
     void UpdateLightningBolts() {
-        
+        // The first two bolts are from start to end and end to start
+        GameObject lightningBolt;
+        LightningBolt boltScript;
+
+        lightningBolt = lightningBolts[0];
+        boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
+        boltScript.startPosition = startPosition;
+        boltScript.endPosition = endPosition;
+
+        lightningBolt = lightningBolts[1];
+        boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
+        boltScript.startPosition = endPosition;
+        boltScript.endPosition = startPosition;
+
+        // The next numBolts lightningBolts are from random start and end positions
         //          X
         //          | <- randomOffset
         // A --------------------- B
@@ -81,7 +96,7 @@ public class LightningLine : MonoBehaviour
         Vector2 startOffset, endOffset;
         
         // Create lightning bolts to and from random points around this line
-        for (int i = 0; i < numBoltsInside; i++) {
+        for (int i = 0; i < numBolts; i++) {
             // calculate start position (random spot around line)
             randomStepPercent1  = Random.value;
             randomOffset1 = Random.Range(-1.0f, 1.0f) * thickness;
@@ -95,8 +110,8 @@ public class LightningLine : MonoBehaviour
             endOffset = endOnLine + normal * randomOffset2;
                         
             // Set positions in LightningBolt script
-            GameObject lightningBolt = lightningBoltsInside[i];
-            LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
+            lightningBolt = lightningBolts[i+2];
+            boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
             boltScript.startPosition = startOffset;
             boltScript.endPosition = endOffset;
         }

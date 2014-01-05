@@ -1,21 +1,34 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LightningBolt : MonoBehaviour
 {
     public LineRenderer lineRenderer;
     public Vector3 startPosition;
     public Vector3 endPosition;
+
     public int numSegments = 10;
     public float maxStepPercent = 0.05f;
     public float maxOffsetPercent = 0.10f;
     public Color tintColor;
 
+    public int maxBranches = 1;
+    public GameObject branchPrefab;
+    public float maxBranchOffsetPercent = 0.25f;
+    private float branchProbability;
+    private List<GameObject> branches;
+
     public float updateRate = 1.0f / 60.0f; // seconds between updates
     private float lastUpdateTime;
+    
+    void Awake() {
+        branches = new List<GameObject>();
+    }
 
     void Start() {
         lastUpdateTime = Time.time;
+        branchProbability = 1.0f * maxBranches / numSegments;
 
         lineRenderer.material.SetColor("_Color", tintColor);
 
@@ -23,6 +36,12 @@ public class LightningBolt : MonoBehaviour
     }
 
     public void CreateBolt() {
+        // Delete old branches
+        for (int i = 0; i < branches.Count; i++) {
+            Destroy(branches[i]);
+        }
+        branches.Clear();
+
         // Compute information about this bolt
         Vector3 difference = endPosition - startPosition;
         Vector3 normalToGround = new Vector3(0, 0, 1);
@@ -57,9 +76,35 @@ public class LightningBolt : MonoBehaviour
             // Add this vertex and continue
             lineRenderer.SetPosition(i, nextPosition);
             previousOffset = randomOffset;
+
+            // Branch using some probability
+            if ((branches.Count < maxBranches) && (Random.value < branchProbability)) {
+                CreateBranch(nextPosition, normal);
+            }
         }
 
         lineRenderer.SetPosition(numSegments - 1, endPosition);
+    }
+
+    public void CreateBranch(Vector3 branchStart, Vector3 normal) {
+        GameObject branchBolt = (GameObject) Instantiate(branchPrefab);
+        branchBolt.transform.parent = transform;
+        branchBolt.transform.localPosition = new Vector3(0,0,0);
+        branchBolt.transform.localScale = new Vector3(1,1,1);
+        branchBolt.transform.localEulerAngles = new Vector3(0,0,0);
+        branches.Add(branchBolt);
+
+        LightningBolt branchBoltScript = (LightningBolt) branchBolt.GetComponent<LightningBolt>();
+        branchBoltScript.tintColor = tintColor;
+        branchBoltScript.startPosition = branchStart;
+
+        // Offset the end by a factor of the normal
+        float totalDistance = Vector3.Distance(startPosition, endPosition);
+        float randomOffsetScale = Random.Range(-maxBranchOffsetPercent, maxBranchOffsetPercent);
+        float randomOffsetDistance = randomOffsetScale * totalDistance;
+        branchBoltScript.endPosition = endPosition + normal * randomOffsetDistance;
+
+        branchBoltScript.CreateBolt();
     }
 
     void Update() {
