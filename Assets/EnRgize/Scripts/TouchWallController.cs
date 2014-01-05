@@ -4,6 +4,8 @@ using System.Collections;
 public class TouchWallController : MonoBehaviour
 {
     public GameObject wallObject; // Wall with physics properties
+    public GameObject reticlePrefab;
+    public float activateDelay = 1.0f;
     public float timeUntilDisable = 3.0f; // seconds
     public float minimumDeltaDistanceToUpdate = 1.0f;
 
@@ -17,17 +19,22 @@ public class TouchWallController : MonoBehaviour
     private LightningLine lightningLineScript;
     private bool inputDetected;
     private float latestInputTime;
+    private bool wallActive = false;
+    private bool spawning = false;
+    private float latestActivateTime;
 
     void Start() {
         lightningLineScript = (LightningLine) transform.GetComponent<LightningLine>();
     }
     
     void EnableWall() {
+        wallActive = true;
         wallObject.SetActive(true);
         lightningLineScript.insideParentObject.SetActive(true);
     }
     
     void DisableWall() {
+        wallActive = false;
         wallObject.SetActive(false);
         lightningLineScript.insideParentObject.SetActive(false);
     }
@@ -63,7 +70,24 @@ public class TouchWallController : MonoBehaviour
         #endif
     }
 
+    void StartActivateDelay() {
+        spawning = true;
+        DisableWall();
+
+        GameObject tempObjectParent = GameObject.FindGameObjectWithTag("TempObjectParent");
+
+        GameObject reticle1 = (GameObject) Instantiate(reticlePrefab);
+        reticle1.transform.parent = tempObjectParent.transform;
+        reticle1.transform.position = activeWorldPosition1;
+
+        GameObject reticle2 = (GameObject) Instantiate(reticlePrefab);
+        reticle2.transform.parent = tempObjectParent.transform;
+        reticle2.transform.position = activeWorldPosition2;
+    }
+
     void ApplyActivePositions() {
+        latestActivateTime = Time.time;
+
         // Set position as the center of the two world positions
         Vector3 centerPosition = (activeWorldPosition1 + activeWorldPosition2) / 2;
         transform.localPosition = centerPosition;
@@ -98,29 +122,37 @@ public class TouchWallController : MonoBehaviour
 
             #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
             if (deltaDistance > minimumDeltaDistanceToUpdate) {
-                EnableWall();
                 activeWorldPosition1 = currentWorldPosition1;
                 activeWorldPosition2 = currentWorldPosition2;
-                ApplyActivePositions();
+                StartActivateDelay();
             }
             #else
             if (deltaDistance > minimumDeltaDistanceToUpdate) {
-                EnableWall();
                 activeWorldPosition1 = currentWorldPosition1;
                 activeWorldPosition2 = currentWorldPosition2;
-                ApplyActivePositions();
+                StartActivateDelay();
             }
             #endif
         } else {
             #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
-            if (Time.time - latestInputTime > timeUntilDisable) {
+            if (wallActive && Time.time - latestActivateTime > timeUntilDisable) {
                 DisableWall();
+                print("disabling");
             }
             #else
-            if (Time.time - latestInputTime > timeUntilDisable) {
+            if (wallActive && Time.time - latestActivateTime > timeUntilDisable) {
                 DisableWall();
             }
             #endif
+        }
+
+        if (spawning) {
+            // Confirm that the correct amount of time has passed (no new input)
+            if (Time.time - latestInputTime > activateDelay) {
+                EnableWall();
+                ApplyActivePositions();
+                spawning = false;
+            }
         }
     }
 }
