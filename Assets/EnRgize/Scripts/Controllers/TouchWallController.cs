@@ -5,16 +5,16 @@ public class TouchWallController : MonoBehaviour
 {
     public GameObject wallObject; // Wall with physics properties
     public GameObject reticlePrefab;
+    public GameObject persistentReticlePrefab;
     public float activateDelay = 1.0f;
     public float timeUntilDisable = 3.0f; // seconds
     public float minimumDeltaDistanceToUpdate = 1.0f;
 
-    // public so these can be observed in the inspector, not for designer editting
-    public Vector3 activeWorldPosition1;
-    public Vector3 activeWorldPosition2;
-    public Vector3 currentWorldPosition1;
-    public Vector3 currentWorldPosition2;
-    public float deltaDistance;
+    private Vector3 activeWorldPosition1;
+    private Vector3 activeWorldPosition2;
+    private Vector3 currentWorldPosition1;
+    private Vector3 currentWorldPosition2;
+    private float deltaDistance;
 
     private LightningLine lightningLineScript;
     private bool inputDetected;
@@ -22,6 +22,14 @@ public class TouchWallController : MonoBehaviour
     private bool wallActive = false;
     private bool spawning = false;
     private float latestActivateTime;
+    
+    // Platform dependent variables
+    #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
+    private int currentInputPosition = 1;
+    private GameObject firstInputReticle;
+    #else
+    
+    #endif
 
     void Start() {
         lightningLineScript = (LightningLine) transform.GetComponent<LightningLine>();
@@ -46,14 +54,28 @@ public class TouchWallController : MonoBehaviour
         // Attempt to get two world positions, input source dependent on platform
         #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
         if (Input.GetMouseButtonDown(0)) {
-            inputDetected = true;
-            latestInputTime = Time.time;
-
             Vector2 mousePosition = Input.mousePosition;
-            currentWorldPosition1 = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
-            currentWorldPosition1.z = 0;
-            
-            currentWorldPosition2 = new Vector3(-4, 2, 0);
+
+            if (currentInputPosition == 1) {
+                DisableWall();
+
+                currentWorldPosition1 = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
+                currentWorldPosition1.z = 0;
+                currentInputPosition = 2;
+
+                GameObject tempObjectParent = GameObject.FindGameObjectWithTag("TempObjectParent");
+                firstInputReticle = (GameObject) Instantiate(persistentReticlePrefab);
+                firstInputReticle.transform.parent = tempObjectParent.transform;
+                firstInputReticle.transform.position = currentWorldPosition1;
+            } else {
+                currentWorldPosition2 = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 0));
+                currentWorldPosition2.z = 0;
+                currentInputPosition = 1;
+
+                inputDetected = true;
+                latestInputTime = Time.time;
+                Destroy(firstInputReticle);
+            }
         }
         #else
         if (Input.touchCount >= 2) {
