@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 
 public class SetRandomTint : MonoBehaviour
 {
-    public float minHue, maxHue;
-    public float minSaturation, maxSaturation;
-    public float minValue, maxValue;
-    public float minAlpha, maxAlpha;
+    public float minHue, maxHue; // [0, 360]
+    public float minSaturation, maxSaturation; // [0, 1]
+    public float minValue, maxValue; // [0, 1]
+    public float minAlpha, maxAlpha; // [0, 1]
 
     void Start() {
         Material materialCopy = renderer.material;
@@ -17,8 +16,7 @@ public class SetRandomTint : MonoBehaviour
         float value = Random.Range(minValue, maxValue);
         float alpha = Random.Range(minAlpha, maxAlpha);
 
-        Color color = EditorGUIUtility.HSVToRGB(hue, saturation, value);
-        color.a = alpha;
+        Color color = ColorUtility.ColorFromHSV(hue, saturation, value, alpha);
 
         materialCopy.color = color;
         renderer.material = materialCopy;
