@@ -25,6 +25,7 @@ public class TouchWallController : MonoBehaviour
 
     void Start() {
         lightningLineScript = (LightningLine) transform.GetComponent<LightningLine>();
+        DisableWall();
     }
     
     void EnableWall() {

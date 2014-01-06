@@ -23,14 +23,14 @@ public class LightningLine : MonoBehaviour
     
     void Awake() {
         lightningBolts = new List<GameObject>();
-    }
-    
-    void Start() {
+
         insideParentObject = new GameObject("Bolts Inside");
         insideParentObject.transform.parent = transform;
         insideParentObject.transform.localPosition = new Vector3(0,0,0);
         insideParentObject.transform.localEulerAngles = new Vector3(0,0,0);
-
+    }
+    
+    void Start() {
         if (inferPositions) {
             float distance = inferFromObject.transform.localScale.x;
             startPosition = new Vector2(-distance/2.0f, 0);
