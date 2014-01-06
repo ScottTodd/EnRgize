@@ -16,6 +16,7 @@ public class LightningBolt : MonoBehaviour
     public int maxBranches = 1;
     public GameObject branchPrefab;
     public float maxBranchOffsetPercent = 0.25f;
+    private int numBranchesActive = 0;
     private float branchProbability;
     private List<GameObject> branches;
 
@@ -30,17 +31,26 @@ public class LightningBolt : MonoBehaviour
         lastUpdateTime = Time.time;
         branchProbability = 1.0f * maxBranches / numSegments;
 
+        for (int i = 0; i < maxBranches; i++) {
+            GameObject branchBolt = (GameObject) Instantiate(branchPrefab);
+            branchBolt.transform.parent = transform;
+            branchBolt.transform.localPosition = new Vector3(0,0,0);
+            branchBolt.transform.localScale = new Vector3(1,1,1);
+            branchBolt.transform.localEulerAngles = new Vector3(0,0,0);
+            branches.Add(branchBolt);
+        }
+
         lineRenderer.material.SetColor("_Color", tintColor);
 
         CreateBolt();
     }
 
     public void CreateBolt() {
-        // Delete old branches
+        // Deactivate old branches
         for (int i = 0; i < branches.Count; i++) {
-            Destroy(branches[i]);
+            branches[i].SetActive(false);
         }
-        branches.Clear();
+        numBranchesActive = 0;
 
         // Compute information about this bolt
         Vector3 difference = endPosition - startPosition;
@@ -78,7 +88,7 @@ public class LightningBolt : MonoBehaviour
             previousOffset = randomOffset;
 
             // Branch using some probability
-            if ((branches.Count < maxBranches) && (Random.value < branchProbability)) {
+            if ((numBranchesActive < maxBranches) && (Random.value < branchProbability)) {
                 CreateBranch(nextPosition, normal);
             }
         }
@@ -87,12 +97,9 @@ public class LightningBolt : MonoBehaviour
     }
 
     public void CreateBranch(Vector3 branchStart, Vector3 normal) {
-        GameObject branchBolt = (GameObject) Instantiate(branchPrefab);
-        branchBolt.transform.parent = transform;
-        branchBolt.transform.localPosition = new Vector3(0,0,0);
-        branchBolt.transform.localScale = new Vector3(1,1,1);
-        branchBolt.transform.localEulerAngles = new Vector3(0,0,0);
-        branches.Add(branchBolt);
+        GameObject branchBolt = branches[numBranchesActive];
+        branchBolt.SetActive(true);
+        numBranchesActive++;
 
         LightningBolt branchBoltScript = (LightningBolt) branchBolt.GetComponent<LightningBolt>();
         branchBoltScript.tintColor = tintColor;
