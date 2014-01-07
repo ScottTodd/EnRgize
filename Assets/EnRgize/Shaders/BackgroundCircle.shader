@@ -1,4 +1,5 @@
-﻿// Shader from http://wiki.unity3d.com/index.php?title=UnlitAlphaWithFade
+﻿// Base shader from http://wiki.unity3d.com/index.php?title=UnlitAlphaWithFade
+// Blend mode suggestions from https://github.com/prime31/UnityCgShaderTutorials
 
 Shader "Custom/BackgroundCircle"
 {
@@ -16,6 +17,9 @@ Shader "Custom/BackgroundCircle"
         Cull back
         
         Blend SrcAlpha DstAlpha
+        //Blend SrcAlpha OneMinusSrcAlpha // alpha blending
+        
+        // ---------------------------------------------------------------
         //Blend OneMinusSrcAlpha Zero
         //Blend SrcAlpha OneMinusDstAlpha
         //Blend OneMinusSrcAlpha OneMinusSrcAlpha
