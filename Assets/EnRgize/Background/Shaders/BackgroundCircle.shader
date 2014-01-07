@@ -11,6 +11,10 @@ Shader "Custom/BackgroundCircle"
  
     Category
     {
+        // Render before standard Transparent since this is the background
+        // Removing this may break sprites
+        Tags { "Queue" = "Transparent-1" }
+        
         Lighting Off
         ZWrite Off
         //ZWrite On // uncomment if you have problems like the sprite disappear in some rotations.
