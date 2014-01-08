@@ -16,6 +16,8 @@ public class LightningBolt : MonoBehaviour
 
     public int maxBranches = 1;
     public GameObject branchPrefab;
+    public float minBranchStepPercent = 0.4f;
+    public float maxBranchStepPercent = 0.9f;
     public float maxBranchOffsetPercent = 0.25f;
     private int numBranchesActive = 0;
     private float branchProbability;
@@ -90,14 +92,14 @@ public class LightningBolt : MonoBehaviour
 
             // Branch using some probability
             if ((numBranchesActive < maxBranches) && (Random.value < branchProbability)) {
-                CreateBranch(nextPosition, normal);
+                CreateBranch(nextPosition, randomStepPercent, difference, normal);
             }
         }
 
         lineRenderer.SetPosition(numSegments - 1, endPosition);
     }
 
-    public void CreateBranch(Vector3 branchStart, Vector3 normal) {
+    public void CreateBranch(Vector3 branchStart, float branchStepPercent, Vector3 difference, Vector3 normal) {
         GameObject branchBolt = branches[numBranchesActive];
         branchBolt.SetActive(true);
         numBranchesActive++;
@@ -106,11 +108,15 @@ public class LightningBolt : MonoBehaviour
         branchBoltScript.tintColor = branchTintColor;
         branchBoltScript.startPosition = branchStart;
 
+        // Step along the remainder of the bolt
+        float branchEndStepPercent = Random.Range(minBranchStepPercent, maxBranchStepPercent);
+        Vector3 branchEndStepPosition = branchStart + difference * (1 - branchStepPercent) * branchEndStepPercent;
+
         // Offset the end by a factor of the normal
         float totalDistance = Vector3.Distance(startPosition, endPosition);
         float randomOffsetScale = Random.Range(-maxBranchOffsetPercent, maxBranchOffsetPercent);
         float randomOffsetDistance = randomOffsetScale * totalDistance;
-        branchBoltScript.endPosition = endPosition + normal * randomOffsetDistance;
+        branchBoltScript.endPosition = branchEndStepPosition + normal * randomOffsetDistance;
 
         branchBoltScript.CreateBolt();
     }
