@@ -9,6 +9,7 @@ public class LightningBall : MonoBehaviour
     public int numBoltsInside = 10;
     public int numBoltsOutside = 10;
     public Color tintColor;
+    public Color branchTintColor;
 
     public float updateRate = 1.0f / 60.0f; // seconds between updates
     private float lastUpdateTime;
@@ -47,6 +48,7 @@ public class LightningBall : MonoBehaviour
 
             LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
             boltScript.tintColor = tintColor;
+            boltScript.branchTintColor = branchTintColor;
 
             lightningBoltsInside.Add(lightningBolt);
         }
@@ -62,6 +64,7 @@ public class LightningBall : MonoBehaviour
 
             LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
             boltScript.tintColor = tintColor;
+            boltScript.branchTintColor = branchTintColor;
             
             lightningBoltsOutside.Add(lightningBolt);
         }

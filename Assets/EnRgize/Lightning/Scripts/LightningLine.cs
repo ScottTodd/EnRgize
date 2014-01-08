@@ -12,6 +12,7 @@ public class LightningLine : MonoBehaviour
     public float thickness = 2.0f;
     public int numBolts = 10;
     public Color tintColor;
+    public Color branchTintColor;
 
     // Parent object to each LightningBolt, exposed to other scripts
     [HideInInspector] public GameObject insideParentObject;
@@ -57,6 +58,7 @@ public class LightningLine : MonoBehaviour
 
             LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
             boltScript.tintColor = tintColor;
+            boltScript.branchTintColor = branchTintColor;
             
             lightningBolts.Add(lightningBolt);
         }

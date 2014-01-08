@@ -12,6 +12,7 @@ public class LightningBolt : MonoBehaviour
     public float maxStepPercent = 0.05f;
     public float maxOffsetPercent = 0.10f;
     public Color tintColor;
+    public Color branchTintColor;
 
     public int maxBranches = 1;
     public GameObject branchPrefab;
@@ -102,7 +103,7 @@ public class LightningBolt : MonoBehaviour
         numBranchesActive++;
 
         LightningBolt branchBoltScript = (LightningBolt) branchBolt.GetComponent<LightningBolt>();
-        branchBoltScript.tintColor = tintColor;
+        branchBoltScript.tintColor = branchTintColor;
         branchBoltScript.startPosition = branchStart;
 
         // Offset the end by a factor of the normal

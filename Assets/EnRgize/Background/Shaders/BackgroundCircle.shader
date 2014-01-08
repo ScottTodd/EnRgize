@@ -20,6 +20,9 @@ Shader "Custom/BackgroundCircle"
         //ZWrite On // uncomment if you have problems like the sprite disappear in some rotations.
         Cull back
         
+        // Blend Equation:
+        //    SrcFactor * fragment_output + DstFactor * pixel_color_in_framebuffer;
+        
         Blend SrcAlpha DstAlpha
         //Blend SrcAlpha OneMinusSrcAlpha // alpha blending
         
@@ -29,13 +32,13 @@ Shader "Custom/BackgroundCircle"
         //Blend OneMinusSrcAlpha OneMinusSrcAlpha
         
         //Blend SrcAlpha OneMinusSrcAlpha // alpha blending
-        //Blend One OneMinusSrcAlpha         // premultiplied alpha blending
-        //Blend One One                                        // additive
-        //Blend SrcAlpha One                        // additive blending
-        //Blend OneMinusDstColor One // soft additive
-        //Blend DstColor Zero // multiplicative
-        //Blend DstColor SrcColor // 2x multiplicative
-        //Blend Zero SrcAlpha                        // multiplicative blending for attenuation by the fragment's alpha
+        //Blend One OneMinusSrcAlpha      // premultiplied alpha blending
+        //Blend One One                   // additive
+        //Blend SrcAlpha One              // additive blending
+        //Blend OneMinusDstColor One      // soft additive
+        //Blend DstColor Zero             // multiplicative
+        //Blend DstColor SrcColor         // 2x multiplicative
+        //Blend Zero SrcAlpha             // multiplicative blending for attenuation by the fragment's alpha
         //Blend SrcColor OneMinusSrcAlpha
         
         //AlphaTest Greater 0.001 // uncomment if you have problems like the sprites or 3d text have white quads instead of alpha pixels.
