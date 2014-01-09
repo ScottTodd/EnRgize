@@ -43,7 +43,7 @@ public class LightningBolt : MonoBehaviour
             branches.Add(branchBolt);
         }
 
-        lineRenderer.material.SetColor("_Color", tintColor);
+        lineRenderer.SetColors(tintColor, tintColor);
 
         CreateBolt();
     }
