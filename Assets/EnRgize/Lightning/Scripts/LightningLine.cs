@@ -66,20 +66,18 @@ public class LightningLine : MonoBehaviour
         UpdateLightningBolts();
     }
     
-    void UpdateLightningBolts() {
+    public void UpdateLightningBolts() {
         // The first two bolts are from start to end and end to start
         GameObject lightningBolt;
         LightningBolt boltScript;
 
         lightningBolt = lightningBolts[0];
         boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
-        boltScript.startPosition = startPosition;
-        boltScript.endPosition = endPosition;
+        boltScript.SetPositions(startPosition, endPosition);
 
         lightningBolt = lightningBolts[1];
         boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
-        boltScript.startPosition = endPosition;
-        boltScript.endPosition = startPosition;
+        boltScript.SetPositions(endPosition, startPosition);
 
         // The next numBolts lightningBolts are from random start and end positions
         //          X
@@ -114,8 +112,7 @@ public class LightningLine : MonoBehaviour
             // Set positions in LightningBolt script
             lightningBolt = lightningBolts[i+2];
             boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
-            boltScript.startPosition = startOffset;
-            boltScript.endPosition = endOffset;
+            boltScript.SetPositions(startOffset, endOffset);
         }
     }
     

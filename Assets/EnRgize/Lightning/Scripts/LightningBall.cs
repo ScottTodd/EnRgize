@@ -97,8 +97,7 @@ public class LightningBall : MonoBehaviour
             // Set positions in LightningBolt script
             GameObject lightningBolt = lightningBoltsInside[i];
             LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
-            boltScript.startPosition = startPosition;
-            boltScript.endPosition = endPosition;
+            boltScript.SetPositions(startPosition, endPosition);
         }
 
         // Outside: create lightning bolts around the edge of the circle
@@ -119,8 +118,7 @@ public class LightningBall : MonoBehaviour
             // Set positions in LightningBolt script
             GameObject lightningBolt = lightningBoltsOutside[i];
             LightningBolt boltScript = (LightningBolt) lightningBolt.GetComponent<LightningBolt>();
-            boltScript.startPosition = startPosition;
-            boltScript.endPosition = endPosition;
+            boltScript.SetPositions(startPosition, endPosition);
         }
     }
 

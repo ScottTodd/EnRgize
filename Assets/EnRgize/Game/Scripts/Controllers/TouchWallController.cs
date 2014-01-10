@@ -133,6 +133,7 @@ public class TouchWallController : MonoBehaviour
         // Scale lightningLine by the distance as well
         lightningLineScript.startPosition.x = -distance / 2.0f;
         lightningLineScript.endPosition.x   =  distance / 2.0f;
+        lightningLineScript.UpdateLightningBolts();
     }
 
     void Update() {

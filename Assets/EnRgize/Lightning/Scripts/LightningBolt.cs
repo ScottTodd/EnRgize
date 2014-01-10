@@ -25,6 +25,8 @@ public class LightningBolt : MonoBehaviour
 
     public float updateRate = 1.0f / 60.0f; // seconds between updates
     private float lastUpdateTime;
+
+    public float particlesRatePerUnit = 4.0f;
     
     void Awake() {
         branches = new List<GameObject>();
@@ -46,6 +48,25 @@ public class LightningBolt : MonoBehaviour
         lineRenderer.SetColors(tintColor, tintColor);
 
         CreateBolt();
+    }
+
+    public void SetPositions(Vector3 newStartPosition, Vector3 newEndPosition) {
+        if (startPosition != newStartPosition && endPosition != newEndPosition) {
+            // Update the particle system, if it exists
+            ParticleSystem particles = gameObject.GetComponentInChildren<ParticleSystem>();
+            if (particles) {
+                particles.Clear();
+
+                float totalDistance = Vector3.Distance(newStartPosition, newEndPosition);
+                particles.gameObject.transform.localScale = new Vector3(totalDistance, 1, 1);
+                particles.emissionRate = particlesRatePerUnit * totalDistance;
+            }
+
+            startPosition = newStartPosition;
+            endPosition = newEndPosition;
+            
+            CreateBolt();
+        }
     }
 
     public void CreateBolt() {
@@ -97,12 +118,6 @@ public class LightningBolt : MonoBehaviour
         }
 
         lineRenderer.SetPosition(numSegments - 1, endPosition);
-
-        // Update the particle system
-        ParticleSystem particles = gameObject.GetComponentInChildren<ParticleSystem>();
-        if (particles) {
-            particles.gameObject.transform.localScale = new Vector3(totalDistance, 1, 1);
-        }
     }
 
     public void CreateBranch(Vector3 branchStart, float branchStepPercent, Vector3 difference, Vector3 normal) {
