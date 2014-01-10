@@ -58,7 +58,8 @@ public class LightningBolt : MonoBehaviour
                 particles.Clear();
 
                 float totalDistance = Vector3.Distance(newStartPosition, newEndPosition);
-                particles.gameObject.transform.localScale = new Vector3(totalDistance, 1, 1);
+                float width = totalDistance * maxOffsetPercent * numSegments;
+                particles.gameObject.transform.localScale = new Vector3(totalDistance, width, 1);
                 particles.emissionRate = particlesRatePerUnit * totalDistance;
             }
 
