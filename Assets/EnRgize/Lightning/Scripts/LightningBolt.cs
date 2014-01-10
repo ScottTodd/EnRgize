@@ -97,6 +97,12 @@ public class LightningBolt : MonoBehaviour
         }
 
         lineRenderer.SetPosition(numSegments - 1, endPosition);
+
+        // Update the particle system
+        ParticleSystem particles = gameObject.GetComponentInChildren<ParticleSystem>();
+        if (particles) {
+            particles.gameObject.transform.localScale = new Vector3(totalDistance, 1, 1);
+        }
     }
 
     public void CreateBranch(Vector3 branchStart, float branchStepPercent, Vector3 difference, Vector3 normal) {
