@@ -51,7 +51,7 @@ public class LightningBolt : MonoBehaviour
     }
 
     public void SetPositions(Vector3 newStartPosition, Vector3 newEndPosition) {
-        if (startPosition != newStartPosition && endPosition != newEndPosition) {
+        if (startPosition != newStartPosition || endPosition != newEndPosition) {
             // Update the particle system, if it exists
             ParticleSystem particles = gameObject.GetComponentInChildren<ParticleSystem>();
             if (particles) {
