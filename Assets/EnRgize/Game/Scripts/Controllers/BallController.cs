@@ -5,14 +5,10 @@ public class BallController : MonoBehaviour
 {
     public bool charged = false;
 
-    private Rigidbody2D ballRigidBody;
     private LightningBall lightningBallScript;
     private GameObject lightningBallObject;
 
     void Start() {
-        ballRigidBody = (Rigidbody2D) transform.GetComponent<Rigidbody2D>();
-        ballRigidBody.AddForce(new Vector2(200, 200));
-
         lightningBallScript = transform.GetComponentInChildren<LightningBall>();
         lightningBallObject = lightningBallScript.gameObject;
 
