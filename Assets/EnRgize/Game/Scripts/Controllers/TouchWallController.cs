@@ -10,6 +10,8 @@ public class TouchWallController : MonoBehaviour
     public float timeUntilDisable = 3.0f; // seconds
     public float minimumDeltaDistanceToUpdate = 1.0f;
 
+    private GameController gameController;
+
     private Vector3 activeWorldPosition1;
     private Vector3 activeWorldPosition2;
     private Vector3 currentWorldPosition1;
@@ -32,6 +34,9 @@ public class TouchWallController : MonoBehaviour
     #endif
 
     void Start() {
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        gameController = gameControllerObject.GetComponent<GameController>();
+
         lightningLineScript = (LightningLine) transform.GetComponent<LightningLine>();
         DisableWall();
     }
@@ -55,6 +60,10 @@ public class TouchWallController : MonoBehaviour
         #if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
         if (Input.GetMouseButtonDown(0)) {
             Vector2 mousePosition = Input.mousePosition;
+
+            if (gameController.ScreenPointWithinGUI(mousePosition)) {
+                return;
+            }
 
             if (currentInputPosition == 1) {
                 DisableWall();
@@ -81,6 +90,11 @@ public class TouchWallController : MonoBehaviour
         if (Input.touchCount >= 2) {
             inputDetected = true;
             latestInputTime = Time.time;
+
+            if (gameController.ScreenPointWithinGUI(Input.GetTouch(0).position) ||
+                gameController.ScreenPointWithinGUI(Input.GetTouch(1).position)) {
+                return;
+            }
 
             Vector2 touchPosition1 = Input.GetTouch(0).position;
             currentWorldPosition1 = Camera.main.ScreenToWorldPoint(new Vector3(touchPosition1.x, touchPosition1.y, 0));
